@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Simple Tab Adapter -->
+    <dimen name="tabPaddingStart">8dp</dimen>
+    <dimen name="tabPaddingTop">0dp</dimen>
+    <dimen name="tabPaddingEnd">8dp</dimen>
+    <dimen name="tabPaddingBottom">0dp</dimen>
+    <dimen name="tabPadding">0dp</dimen>
+    <dimen name="tabIndicatorHeight">2dp</dimen>
+
+
+</resources>
