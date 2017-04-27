@@ -18,12 +18,26 @@ public class SimpleTabLayoutActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tab);
+        //noinspection ConstantConditions
         getSupportActionBar().setElevation(0);
 
-        FunTabLayout tablayout = (FunTabLayout) findViewById(R.id.tablayout);
-        tablayout.setTabVisibleCount(5);
-
         ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
+        setupViewPager(viewPager);
+
+        FunTabLayout tabLayout = (FunTabLayout) findViewById(R.id.tablayout);
+        tabLayout.setTabVisibleCount(5);
+        SimpleTabAdapter.Builder builder = new SimpleTabAdapter.Builder(this).
+                setViewPager(viewPager).
+                setTabPadding(16, 16, 16, 16).
+                setTabSelectedTextColor(Color.WHITE).
+                setTabIndicatorHeight(5).
+                setTabIndicatorColor(Color.WHITE).
+                setTabBackgroundResId(R.drawable.ripple).
+                setTabTextAppearance(R.style.SimpleTabText);
+        tabLayout.setUpWithAdapter(builder.build());
+    }
+
+    private void setupViewPager(ViewPager viewPager) {
         viewPager.setAdapter(new FragmentPagerAdapter(getSupportFragmentManager()) {
             @Override
             public Fragment getItem(int position) {
@@ -40,15 +54,5 @@ public class SimpleTabLayoutActivity extends AppCompatActivity {
                 return "Fragment" + position;
             }
         });
-
-        SimpleTabAdapter.Builder builder = new SimpleTabAdapter.Builder(this).
-                setViewPager(viewPager).
-                setTabPadding(16, 16, 16, 16).
-                setTabSelectedTextColor(Color.WHITE).
-                setTabIndicatorHeight(5).
-                setTabIndicatorColor(Color.WHITE).
-                setTabBackgroundResId(R.drawable.ripple).
-                setTabTextAppearance(R.style.SimpleTabText);
-        tablayout.setUpWithAdapter(builder.build());
     }
 }

@@ -15,10 +15,15 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".simpletablayout.SimpleTabLayoutActivity"
-            android:label="Simple Tab Layout"/>
-        <activity android:name=".bubbletablayout.BubbleTabLayoutActivity"
-            android:label="Bubble Tab Layout"/>
+        <activity
+            android:name=".simpletablayout.SimpleTabLayoutActivity"
+            android:label="Simple Tab Layout" />
+        <activity
+            android:name=".bubbletablayout.BubbleTabLayoutActivity"
+            android:label="Bubble Tab Layout" />
+        <activity
+            android:name=".poptablayout.PopTabLayoutActivity"
+            android:label="Pop Tab Layout" />
     </application>
 
 </manifest>

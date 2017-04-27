@@ -7,6 +7,7 @@ import android.view.View;
 
 import com.tompee.funtablayout.BubbleTabAdapter;
 import com.tompee.funtablayoutsample.bubbletablayout.BubbleTabLayoutActivity;
+import com.tompee.funtablayoutsample.poptablayout.PopTabLayoutActivity;
 import com.tompee.funtablayoutsample.simpletablayout.SimpleTabLayoutActivity;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
@@ -26,6 +27,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
             case R.id.bubble_tab:
                 intent = new Intent(this, BubbleTabLayoutActivity.class);
+                break;
+            case R.id.pop_tab:
+                intent = new Intent(this, PopTabLayoutActivity.class);
                 break;
             default:
                 intent = null;

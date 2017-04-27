@@ -16,7 +16,13 @@
 
     <style name="BubbleTabText">
         <item name="android:textSize">12sp</item>
-        <item name="android:textColor">@android:color/primary_text_dark</item>
+        <item name="android:textColor">@android:color/white</item>
+        <item name="textAllCaps">true</item>
+    </style>
+
+    <style name="PopTabText">
+        <item name="android:textSize">10sp</item>
+        <item name="android:textColor">@android:color/white</item>
         <item name="textAllCaps">true</item>
     </style>
 

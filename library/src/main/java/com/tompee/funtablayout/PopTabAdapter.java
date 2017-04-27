@@ -1,23 +1,12 @@
-/**
- * Copyright (C) 2017 tompee
- * <p/>
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * <p/>
- * http://www.apache.org/licenses/LICENSE-2.0
- * <p/>
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package com.tompee.funtablayout;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
+import android.graphics.drawable.Drawable;
+import android.support.annotation.DrawableRes;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.RecyclerView;
@@ -27,47 +16,29 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.tompee.funtablayout.custom.BubbleTabView;
+import com.tompee.funtablayout.custom.PopTabView;
 
-import java.util.ArrayList;
-import java.util.List;
+public class PopTabAdapter extends BaseAdapter<PopTabAdapter.ViewHolder> {
+    private static final int MAX_TAB_TEXT_LINES = 1;
 
-public class BubbleTabAdapter extends BaseAdapter<BubbleTabAdapter.ViewHolder> {
-    private static final int MAX_TAB_TEXT_LINES = 2;
-
-    private int mIconDimension;
+    private int mDefaultIconColor = Color.GRAY;
     private IconFetcher mIconFetcher;
-    private List<Bitmap> mPreloadedBitmaps;
+    private Integer mIconDimension;
 
-    private BubbleTabAdapter(Builder builder) {
+    public PopTabAdapter(Builder builder) {
         super(builder);
+
         if (builder.mIconDimension != null) {
             mIconDimension = builder.mIconDimension;
         }
+        if (builder.mDefaultIconColor != null) {
+            mDefaultIconColor = builder.mDefaultIconColor;
+        }
         mIconFetcher = builder.mIconFetcher;
-        getPreloadedBitmaps(builder.getContext());
-    }
-
-    private void getPreloadedBitmaps(Context context) {
-        mPreloadedBitmaps = new ArrayList<>();
-        if (mIconFetcher != null) {
-            for (int index = 0; index < getItemCount(); index++) {
-                int resourceId = mIconFetcher.getSelectedIcon(index);
-                mPreloadedBitmaps.add(BitmapFactory.decodeResource(context.getResources(),
-                        resourceId, null));
-            }
-        }
-    }
-
-    public Bitmap getBitmapIcon(int position) {
-        if (mPreloadedBitmaps.isEmpty()) {
-            return null;
-        }
-        return mPreloadedBitmaps.get(position);
     }
 
     @Override
-    public int getTabIndicatorColor() {
+    protected int getTabIndicatorColor() {
         return mTabIndicatorColor;
     }
 
@@ -77,8 +48,8 @@ public class BubbleTabAdapter extends BaseAdapter<BubbleTabAdapter.ViewHolder> {
     }
 
     @Override
-    public BubbleTabAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        BubbleTabView itemView = new BubbleTabView(parent.getContext());
+    public PopTabAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        PopTabView itemView = new PopTabView(parent.getContext());
         itemView.setLayoutParams(createLayoutParamsForTabs(parent));
         ViewCompat.setPaddingRelative(itemView, mTabPaddingStart, mTabPaddingTop,
                 mTabPaddingEnd, mTabPaddingBottom);
@@ -86,24 +57,8 @@ public class BubbleTabAdapter extends BaseAdapter<BubbleTabAdapter.ViewHolder> {
         itemView.setIconDimension(mIconDimension);
         itemView.setTextAppearance(mTabTextAppearance);
         itemView.setMaxLines(MAX_TAB_TEXT_LINES);
+        itemView.setTextColor(mTabIndicatorColor);
         return new ViewHolder(itemView);
-    }
-
-    @Override
-    public void onBindViewHolder(BubbleTabAdapter.ViewHolder holder, int position) {
-        CharSequence title = getViewPager().getAdapter().getPageTitle(position);
-        holder.mTitle.setText(title);
-        if (mIconFetcher != null) {
-            holder.mIcon.setBackgroundResource(mIconFetcher.getIcon(position));
-        } else {
-            holder.mIcon.setVisibility(View.GONE);
-        }
-        ((BubbleTabView) holder.mTitle.getParent()).resetAlpha();
-    }
-
-    @Override
-    public int getItemCount() {
-        return getViewPager().getAdapter().getCount();
     }
 
     private LinearLayout.LayoutParams createLayoutParamsForTabs(ViewGroup parent) {
@@ -118,15 +73,51 @@ public class BubbleTabAdapter extends BaseAdapter<BubbleTabAdapter.ViewHolder> {
         return params;
     }
 
+    @Override
+    public void onBindViewHolder(PopTabAdapter.ViewHolder holder, int position) {
+        CharSequence title = getViewPager().getAdapter().getPageTitle(position);
+        PopTabView view = (PopTabView) holder.mTitle.getParent();
+        view.setTextVisible(getCurrentIndicatorPosition() == position);
+        view.setSelected(getCurrentIndicatorPosition() == position);
+        holder.mTitle.setText(title);
+        if (mIconFetcher != null) {
+            holder.mIcon.setImageDrawable(loadIconWithTint(holder.mIcon.getContext(),
+                    mIconFetcher.getIcon(position)));
+        } else {
+            holder.mIcon.setVisibility(View.GONE);
+        }
+    }
+
+    private Drawable loadIconWithTint(Context context, @DrawableRes int resourceId) {
+        Drawable icon = ContextCompat.getDrawable(context, resourceId);
+        ColorStateList colorStateList;
+        int[][] states = new int[][]{
+                new int[]{android.R.attr.state_selected},
+                new int[]{-android.R.attr.state_empty}
+        };
+        int[] colors = new int[]{
+                mTabIndicatorColor,
+                mDefaultIconColor
+        };
+        colorStateList = new ColorStateList(states, colors);
+        icon = DrawableCompat.wrap(icon);
+        DrawableCompat.setTintList(icon, colorStateList);
+        return icon;
+    }
+
+    @Override
+    public int getItemCount() {
+        return getViewPager().getAdapter().getCount();
+    }
+
     public interface IconFetcher {
         int getIcon(int position);
-
-        int getSelectedIcon(int position);
     }
 
     public static class Builder extends BaseAdapter.BaseBuilder {
         private IconFetcher mIconFetcher;
         private Integer mIconDimension;
+        private Integer mDefaultIconColor;
 
         /**
          * Creates a builder for a simple tab adapter
@@ -155,7 +146,7 @@ public class BubbleTabAdapter extends BaseAdapter<BubbleTabAdapter.ViewHolder> {
          * @param tabPaddingTop    the top padding in pixels
          * @param tabPaddingEnd    the end padding in pixels
          * @param tabPaddingBottom the bottom padding in pixels
-         * @return This BaseBuilder object to allow for chaining of calls to set methods
+         * @return This Builder object to allow for chaining of calls to set methods
          */
         public Builder setTabPadding(int tabPaddingStart, int tabPaddingTop, int tabPaddingEnd,
                                      int tabPaddingBottom) {
@@ -167,7 +158,7 @@ public class BubbleTabAdapter extends BaseAdapter<BubbleTabAdapter.ViewHolder> {
          * Sets the text appearance from the specified style resource.
          *
          * @param tabTextAppearance The resource identifier of the style to apply.
-         * @return This BaseBuilder object to allow for chaining of calls to set methods
+         * @return This Builder object to allow for chaining of calls to set methods
          */
         public Builder setTabTextAppearance(int tabTextAppearance) {
             super.setTabTextAppearance(tabTextAppearance);
@@ -179,7 +170,7 @@ public class BubbleTabAdapter extends BaseAdapter<BubbleTabAdapter.ViewHolder> {
          * a Drawable object or 0 to remove the background.
          *
          * @param tabBackgroundResId The identifier of the resource.
-         * @return This BaseBuilder object to allow for chaining of calls to set methods
+         * @return This Builder object to allow for chaining of calls to set methods
          */
         public Builder setTabBackgroundResId(int tabBackgroundResId) {
             super.setTabBackgroundResId(tabBackgroundResId);
@@ -221,15 +212,26 @@ public class BubbleTabAdapter extends BaseAdapter<BubbleTabAdapter.ViewHolder> {
         }
 
         /**
+         * Sets icon color when a tab is not selected. Default color is gray
+         *
+         * @param color New color to set
+         * @return This Builder object to allow for chaining of calls to set methods
+         */
+        public Builder setDefaultIconColor(int color) {
+            mDefaultIconColor = color;
+            return this;
+        }
+
+        /**
          * Creates a SimpleTabAdapter with the arguments supplied to this builder.
          *
          * @return A SimpleTabAdapter instance
          */
-        public BubbleTabAdapter build() {
+        public PopTabAdapter build() {
             if (getViewPager() == null) {
                 throw new IllegalArgumentException("ViewPager cannot be null");
             }
-            return new BubbleTabAdapter(this);
+            return new PopTabAdapter(this);
         }
     }
 
@@ -239,8 +241,8 @@ public class BubbleTabAdapter extends BaseAdapter<BubbleTabAdapter.ViewHolder> {
 
         public ViewHolder(View itemView) {
             super(itemView);
-            mIcon = ((BubbleTabView) itemView).getIconView();
-            mTitle = ((BubbleTabView) itemView).getTitleView();
+            mIcon = ((PopTabView) itemView).getIconView();
+            mTitle = ((PopTabView) itemView).getTitleView();
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

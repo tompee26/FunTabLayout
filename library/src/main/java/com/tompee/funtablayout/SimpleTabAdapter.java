@@ -24,7 +24,6 @@ import android.support.v4.view.ViewPager;
 import android.support.v4.widget.TextViewCompat;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
@@ -34,44 +33,14 @@ import android.widget.TextView;
 public class SimpleTabAdapter extends BaseAdapter<SimpleTabAdapter.ViewHolder> {
     private static final int MAX_TAB_TEXT_LINES = 2;
 
-    private int mTabVisibleCount;
-    private int mTabPaddingStart;
-    private int mTabPaddingTop;
-    private int mTabPaddingEnd;
-    private int mTabPaddingBottom;
-    private int mTabTextAppearance;
-    private int mTabBackgroundResId;
     private int mTabSelectedTextColor;
-    private int mTabIndicatorColor;
     private int mTabIndicatorHeight;
 
     private SimpleTabAdapter(Builder builder) {
-        super(builder.mViewPager);
-        getDefaultValues(builder.mContext);
-
-        if (builder.mTabPaddingStart != null) {
-            mTabPaddingStart = builder.mTabPaddingStart;
-        }
-        if (builder.mTabPaddingTop != null) {
-            mTabPaddingTop = builder.mTabPaddingTop;
-        }
-        if (builder.mTabPaddingEnd != null) {
-            mTabPaddingEnd = builder.mTabPaddingEnd;
-        }
-        if (builder.mTabPaddingBottom != null) {
-            mTabPaddingBottom = builder.mTabPaddingBottom;
-        }
-        if (builder.mTabTextAppearance != null) {
-            mTabTextAppearance = builder.mTabTextAppearance;
-        }
-        if (builder.mTabBackgroundResId != null) {
-            mTabBackgroundResId = builder.mTabBackgroundResId;
-        }
+        super(builder);
+        getDefaultValues(builder.getContext());
         if (builder.mTabSelectedTextColor != null) {
             mTabSelectedTextColor = builder.mTabSelectedTextColor;
-        }
-        if (builder.mTabIndicatorColor != null) {
-            mTabIndicatorColor = builder.mTabIndicatorColor;
         }
         if (builder.mTabIndicatorHeight != null) {
             mTabIndicatorHeight = builder.mTabIndicatorHeight;
@@ -79,24 +48,9 @@ public class SimpleTabAdapter extends BaseAdapter<SimpleTabAdapter.ViewHolder> {
     }
 
     private void getDefaultValues(Context context) {
-        /** Padding */
-        mTabPaddingStart = mTabPaddingTop = mTabPaddingEnd = mTabPaddingBottom =
-                context.getResources().getDimensionPixelSize(R.dimen.tabPadding);
-        mTabPaddingStart = context.getResources().getDimensionPixelSize(R.dimen.tabPaddingStart);
-        mTabPaddingTop = context.getResources().getDimensionPixelSize(R.dimen.tabPaddingTop);
-        mTabPaddingEnd = context.getResources().getDimensionPixelSize(R.dimen.tabPaddingEnd);
-        mTabPaddingBottom = context.getResources().getDimensionPixelSize(R.dimen.tabPaddingBottom);
-
-        /** Text Appearance */
-        mTabTextAppearance = R.style.SimpleText;
-
-        /** View Appearance */
+        /** Selected Appearance */
         TypedValue typedValue = new TypedValue();
         Resources.Theme theme = context.getTheme();
-        theme.resolveAttribute(R.attr.selectableItemBackground, typedValue, true);
-        mTabBackgroundResId = typedValue.resourceId;
-
-        /** Selected Appearance */
         theme.resolveAttribute(android.R.attr.textColorPrimary, typedValue, true);
         TypedArray arr = context.obtainStyledAttributes(typedValue.data, new int[]{
                 android.R.attr.textColorPrimary});
@@ -105,13 +59,6 @@ public class SimpleTabAdapter extends BaseAdapter<SimpleTabAdapter.ViewHolder> {
 
         /** Tab Indicator */
         mTabIndicatorHeight = context.getResources().getDimensionPixelSize(R.dimen.tabIndicatorHeight);
-        theme.resolveAttribute(R.attr.colorAccent, typedValue, true);
-        mTabIndicatorColor = typedValue.data;
-    }
-
-    @Override
-    public void setTabVisibleCount(int count) {
-        mTabVisibleCount = count;
     }
 
     @Override
@@ -159,8 +106,8 @@ public class SimpleTabAdapter extends BaseAdapter<SimpleTabAdapter.ViewHolder> {
     private RecyclerView.LayoutParams createLayoutParamsForTabs(ViewGroup parent) {
         RecyclerView.LayoutParams params;
         int width;
-        if (getItemCount() > mTabVisibleCount) {
-            width = parent.getWidth() / mTabVisibleCount;
+        if (getItemCount() > getTabVisibleCount()) {
+            width = parent.getWidth() / getTabVisibleCount();
         } else {
             width = parent.getWidth() / getItemCount();
         }
@@ -185,17 +132,8 @@ public class SimpleTabAdapter extends BaseAdapter<SimpleTabAdapter.ViewHolder> {
         }
     }
 
-    public static class Builder {
-        private final Context mContext;
-        private ViewPager mViewPager;
-        private Integer mTabPaddingStart;
-        private Integer mTabPaddingTop;
-        private Integer mTabPaddingEnd;
-        private Integer mTabPaddingBottom;
-        private Integer mTabTextAppearance;
-        private Integer mTabBackgroundResId;
+    public static class Builder extends BaseAdapter.BaseBuilder {
         private Integer mTabSelectedTextColor;
-        private Integer mTabIndicatorColor;
         private Integer mTabIndicatorHeight;
 
         /**
@@ -204,7 +142,7 @@ public class SimpleTabAdapter extends BaseAdapter<SimpleTabAdapter.ViewHolder> {
          * @param context the parent context
          */
         public Builder(Context context) {
-            mContext = context;
+            super(context);
         }
 
         /**
@@ -214,7 +152,7 @@ public class SimpleTabAdapter extends BaseAdapter<SimpleTabAdapter.ViewHolder> {
          * @return This Builder object to allow for chaining of calls to set methods
          */
         public Builder setViewPager(ViewPager viewPager) {
-            mViewPager = viewPager;
+            super.setViewPager(viewPager);
             return this;
         }
 
@@ -225,14 +163,11 @@ public class SimpleTabAdapter extends BaseAdapter<SimpleTabAdapter.ViewHolder> {
          * @param tabPaddingTop    the top padding in pixels
          * @param tabPaddingEnd    the end padding in pixels
          * @param tabPaddingBottom the bottom padding in pixels
-         * @return This Builder object to allow for chaining of calls to set methods
+         * @return This BaseBuilder object to allow for chaining of calls to set methods
          */
         public Builder setTabPadding(int tabPaddingStart, int tabPaddingTop, int tabPaddingEnd,
-                                     int tabPaddingBottom) {
-            mTabPaddingStart = tabPaddingStart;
-            mTabPaddingTop = tabPaddingTop;
-            mTabPaddingEnd = tabPaddingEnd;
-            mTabPaddingBottom = tabPaddingBottom;
+                                         int tabPaddingBottom) {
+            super.setTabPadding(tabPaddingStart, tabPaddingTop, tabPaddingEnd, tabPaddingBottom);
             return this;
         }
 
@@ -240,10 +175,10 @@ public class SimpleTabAdapter extends BaseAdapter<SimpleTabAdapter.ViewHolder> {
          * Sets the text appearance from the specified style resource.
          *
          * @param tabTextAppearance The resource identifier of the style to apply.
-         * @return This Builder object to allow for chaining of calls to set methods
+         * @return This BaseBuilder object to allow for chaining of calls to set methods
          */
         public Builder setTabTextAppearance(int tabTextAppearance) {
-            mTabTextAppearance = tabTextAppearance;
+            super.setTabTextAppearance(tabTextAppearance);
             return this;
         }
 
@@ -252,10 +187,10 @@ public class SimpleTabAdapter extends BaseAdapter<SimpleTabAdapter.ViewHolder> {
          * a Drawable object or 0 to remove the background.
          *
          * @param tabBackgroundResId The identifier of the resource.
-         * @return This Builder object to allow for chaining of calls to set methods
+         * @return This BaseBuilder object to allow for chaining of calls to set methods
          */
         public Builder setTabBackgroundResId(int tabBackgroundResId) {
-            mTabBackgroundResId = tabBackgroundResId;
+            super.setTabBackgroundResId(tabBackgroundResId);
             return this;
         }
 
@@ -277,7 +212,7 @@ public class SimpleTabAdapter extends BaseAdapter<SimpleTabAdapter.ViewHolder> {
          * @return This Builder object to allow for chaining of calls to set methods
          */
         public Builder setTabIndicatorColor(int color) {
-            mTabIndicatorColor = color;
+            super.setTabIndicatorColor(color);
             return this;
         }
 
@@ -298,7 +233,7 @@ public class SimpleTabAdapter extends BaseAdapter<SimpleTabAdapter.ViewHolder> {
          * @return A SimpleTabAdapter instance
          */
         public SimpleTabAdapter build() {
-            if (mViewPager == null) {
+            if (getViewPager() == null) {
                 throw new IllegalArgumentException("ViewPager cannot be null");
             }
             return new SimpleTabAdapter(this);

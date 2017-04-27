@@ -15,17 +15,65 @@
  */
 package com.tompee.funtablayout;
 
+import android.content.Context;
+import android.content.res.Resources;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.RecyclerView;
+import android.util.TypedValue;
 
 public abstract class BaseAdapter<T extends RecyclerView.ViewHolder>
-            extends RecyclerView.Adapter<T> {
+        extends RecyclerView.Adapter<T> {
+    protected int mTabPaddingStart;
+    protected int mTabPaddingTop;
+    protected int mTabPaddingEnd;
+    protected int mTabPaddingBottom;
+    protected int mTabTextAppearance;
+    protected int mTabBackgroundResId;
+    protected int mTabIndicatorColor;
+    private ViewPager mViewPager;
+    private int mIndicatorPosition;
+    private int mTabVisibleCount;
 
-    protected ViewPager mViewPager;
-    protected int mIndicatorPosition;
+    public BaseAdapter(BaseBuilder baseBuilder) {
+        mViewPager = baseBuilder.mViewPager;
+        mTabPaddingStart = mTabPaddingTop = mTabPaddingEnd = mTabPaddingBottom =
+                baseBuilder.mContext.getResources().getDimensionPixelSize(R.dimen.tabPadding);
+        mTabPaddingStart = baseBuilder.mContext.getResources().getDimensionPixelSize(R.dimen.tabPaddingStart);
+        mTabPaddingTop = baseBuilder.mContext.getResources().getDimensionPixelSize(R.dimen.tabPaddingTop);
+        mTabPaddingEnd = baseBuilder.mContext.getResources().getDimensionPixelSize(R.dimen.tabPaddingEnd);
+        mTabPaddingBottom = baseBuilder.mContext.getResources().getDimensionPixelSize(R.dimen.tabPaddingBottom);
 
-    public BaseAdapter(ViewPager viewPager) {
-        mViewPager = viewPager;
+        mTabTextAppearance = R.style.SimpleText;
+
+        TypedValue typedValue = new TypedValue();
+        Resources.Theme theme = baseBuilder.mContext.getTheme();
+        theme.resolveAttribute(R.attr.selectableItemBackground, typedValue, true);
+        mTabBackgroundResId = typedValue.resourceId;
+
+        theme.resolveAttribute(R.attr.colorAccent, typedValue, true);
+        mTabIndicatorColor = typedValue.data;
+
+        if (baseBuilder.mTabPaddingStart != null) {
+            mTabPaddingStart = baseBuilder.mTabPaddingStart;
+        }
+        if (baseBuilder.mTabPaddingTop != null) {
+            mTabPaddingTop = baseBuilder.mTabPaddingTop;
+        }
+        if (baseBuilder.mTabPaddingEnd != null) {
+            mTabPaddingEnd = baseBuilder.mTabPaddingEnd;
+        }
+        if (baseBuilder.mTabPaddingBottom != null) {
+            mTabPaddingBottom = baseBuilder.mTabPaddingBottom;
+        }
+        if (baseBuilder.mTabTextAppearance != null) {
+            mTabTextAppearance = baseBuilder.mTabTextAppearance;
+        }
+        if (baseBuilder.mTabBackgroundResId != null) {
+            mTabBackgroundResId = baseBuilder.mTabBackgroundResId;
+        }
+        if (baseBuilder.mTabIndicatorColor != null) {
+            mTabIndicatorColor = baseBuilder.mTabIndicatorColor;
+        }
     }
 
     public ViewPager getViewPager() {
@@ -40,9 +88,68 @@ public abstract class BaseAdapter<T extends RecyclerView.ViewHolder>
         mIndicatorPosition = indicatorPosition;
     }
 
-    protected abstract void setTabVisibleCount(int count);
+    protected int getTabVisibleCount() {
+        return mTabVisibleCount;
+    }
+
+    protected void setTabVisibleCount(int count) {
+        mTabVisibleCount = count;
+    }
 
     protected abstract int getTabIndicatorColor();
 
     protected abstract int getTabIndicatorHeight();
+
+    public static class BaseBuilder {
+        private final Context mContext;
+        private ViewPager mViewPager;
+        private Integer mTabPaddingStart;
+        private Integer mTabPaddingTop;
+        private Integer mTabPaddingEnd;
+        private Integer mTabPaddingBottom;
+        private Integer mTabTextAppearance;
+        private Integer mTabBackgroundResId;
+        private Integer mTabIndicatorColor;
+
+        public BaseBuilder(Context context) {
+            mContext = context;
+        }
+
+        protected Context getContext() {
+            return mContext;
+        }
+
+        protected ViewPager getViewPager() {
+            return mViewPager;
+        }
+
+        public BaseBuilder setViewPager(ViewPager viewPager) {
+            mViewPager = viewPager;
+            return this;
+        }
+
+        public BaseBuilder setTabPadding(int tabPaddingStart, int tabPaddingTop, int tabPaddingEnd,
+                                         int tabPaddingBottom) {
+            mTabPaddingStart = tabPaddingStart;
+            mTabPaddingTop = tabPaddingTop;
+            mTabPaddingEnd = tabPaddingEnd;
+            mTabPaddingBottom = tabPaddingBottom;
+            return this;
+        }
+
+        public BaseBuilder setTabTextAppearance(int tabTextAppearance) {
+            mTabTextAppearance = tabTextAppearance;
+            return this;
+        }
+
+        public BaseBuilder setTabBackgroundResId(int tabBackgroundResId) {
+            mTabBackgroundResId = tabBackgroundResId;
+            return this;
+        }
+
+        public BaseBuilder setTabIndicatorColor(int color) {
+            mTabIndicatorColor = color;
+            return this;
+        }
+    }
 }

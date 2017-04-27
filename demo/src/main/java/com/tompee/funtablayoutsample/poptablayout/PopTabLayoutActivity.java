@@ -1,4 +1,4 @@
-package com.tompee.funtablayoutsample.bubbletablayout;
+package com.tompee.funtablayoutsample.poptablayout;
 
 import android.graphics.Color;
 import android.os.Bundle;
@@ -7,12 +7,12 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 
-import com.tompee.funtablayout.BubbleTabAdapter;
 import com.tompee.funtablayout.FunTabLayout;
+import com.tompee.funtablayout.PopTabAdapter;
 import com.tompee.funtablayoutsample.R;
 import com.tompee.funtablayoutsample.fragment.SampleFragment;
 
-public class BubbleTabLayoutActivity extends AppCompatActivity implements BubbleTabAdapter.IconFetcher {
+public class PopTabLayoutActivity extends AppCompatActivity implements PopTabAdapter.IconFetcher {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,14 +25,14 @@ public class BubbleTabLayoutActivity extends AppCompatActivity implements Bubble
         setupViewPager(viewPager);
 
         FunTabLayout tabLayout = (FunTabLayout) findViewById(R.id.tablayout);
-        BubbleTabAdapter.Builder builder = new BubbleTabAdapter.Builder(this).
+        PopTabAdapter.Builder builder = new PopTabAdapter.Builder(this).
                 setViewPager(viewPager).
                 setTabPadding(24, 24, 24, 24).
-                setTabIndicatorColor(Color.parseColor("#ffa022")).
                 setTabBackgroundResId(R.drawable.ripple).
                 setIconFetcher(this).
-                setIconDimension(50).
-                setTabTextAppearance(R.style.BubbleTabText);
+                setIconDimension(70).
+                setDefaultIconColor(Color.WHITE).
+                setTabTextAppearance(R.style.PopTabText);
         tabLayout.setUpWithAdapter(builder.build());
     }
 
@@ -75,15 +75,6 @@ public class BubbleTabLayoutActivity extends AppCompatActivity implements Bubble
 
     @Override
     public int getIcon(int position) {
-        return getIconInternal(position);
-    }
-
-    @Override
-    public int getSelectedIcon(int position) {
-        return getIconInternal(position);
-    }
-
-    private int getIconInternal(int position) {
         int resource = R.mipmap.ic_launcher;
         switch (position) {
             case 0:

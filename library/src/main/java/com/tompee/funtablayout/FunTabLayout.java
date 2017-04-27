@@ -123,6 +123,8 @@ public class FunTabLayout extends RecyclerView {
         } else if (mAdapter instanceof BubbleTabAdapter) {
             mViewPager.addOnPageChangeListener(new BubbleTabOnPageChangeListener(this,
                     (BubbleTabAdapter) adapter));
+        } else if (mAdapter instanceof PopTabAdapter) {
+            mViewPager.addOnPageChangeListener(new SimpleTabOnPageChangeListener(this));
         }
         mAdapter.setTabVisibleCount(mTabVisibleCount);
         setAdapter(adapter);
