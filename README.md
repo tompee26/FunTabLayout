@@ -3,7 +3,9 @@
 An efficient tablayout for Android with added FUN!
 <br>
 <img src="assets/simple.gif" width="200">
+<br>
 <img src="assets/bubble.gif" width="200">
+<br>
 <img src="assets/pop.gif" width="200">
 
 ## Features
