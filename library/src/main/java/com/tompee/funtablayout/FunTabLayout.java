@@ -364,11 +364,11 @@ public class FunTabLayout extends RecyclerView {
             mFunTabLayout.scrollToTab(position, positionOffset, false);
             BubbleTabView view = (BubbleTabView) mLinearLayoutManager.findViewByPosition(position);
             if (view != null) {
-                view.setAlpha(positionOffset);
+                view.setViewAlpha(positionOffset);
             }
             BubbleTabView nextView = (BubbleTabView) mLinearLayoutManager.findViewByPosition(position + 1);
             if (nextView != null) {
-                nextView.setAlpha(1 - positionOffset);
+                nextView.setViewAlpha(1 - positionOffset);
             }
             mTabPositionOffset = positionOffset;
         }

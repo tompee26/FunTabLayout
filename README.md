@@ -13,7 +13,13 @@ An efficient tablayout for Android with added FUN!
 - Supports multiple tab view animations
 
 ## Getting started
-Still a work in progress. Will update when binary is already hosted.
+In your build.gradle:
+
+```
+dependencies {
+   compile 'com.tompee:funtablayout:1.0.0'
+}
+```
 
 Define `FunTabLayout` and ViewPager in xml layout with custom attributes.
 ```xml
@@ -148,6 +154,9 @@ tabLayout.setUpWithAdapter(builder.build());
 ## Thanks
 The RecyclerView approach in FunTabLayout is an extension of nshmura's RecyclerTabLayout
 https://github.com/nshmura/RecyclerTabLayout
+
+## Coming soon!
+More tablayout adapters. Watch out!
 
 ## License
 ```

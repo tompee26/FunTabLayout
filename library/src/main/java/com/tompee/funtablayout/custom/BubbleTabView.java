@@ -25,8 +25,7 @@ public class BubbleTabView extends LinearLayout {
         addView(mTitleView);
     }
 
-    @Override
-    public void setAlpha(float alpha) {
+    public void setViewAlpha(float alpha) {
         for (int index = 0; index < getChildCount(); index++) {
             ViewCompat.setAlpha(getChildAt(index), alpha);
         }
