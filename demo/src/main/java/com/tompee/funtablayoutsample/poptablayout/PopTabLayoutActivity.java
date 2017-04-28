@@ -31,15 +31,10 @@ public class PopTabLayoutActivity extends AppCompatActivity implements PopTabAda
                 setTabTextAppearance(R.style.PopTabText).
                 setTabBackgroundResId(R.drawable.ripple).
                 setTabIndicatorColor(Color.GREEN).
-                setIconFetcher(new PopTabAdapter.IconFetcher() {
-                    @Override
-                    public int getIcon(int position) {
-                        return 0;
-                    }
-                }).
+                setIconFetcher(this).
                 setIconDimension(70).
                 setDefaultIconColor(Color.WHITE).
-                setPopDuration(2000);
+                setPopDuration(500);
         tabLayout.setUpWithAdapter(builder.build());
     }
 

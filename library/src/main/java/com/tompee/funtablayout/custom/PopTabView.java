@@ -1,6 +1,7 @@
 package com.tompee.funtablayout.custom;
 
 import android.content.Context;
+import android.support.v4.view.ViewCompat;
 import android.support.v4.widget.TextViewCompat;
 import android.text.TextUtils;
 import android.view.Gravity;
@@ -17,6 +18,7 @@ public class PopTabView extends LinearLayout implements Animation.AnimationListe
     private IconView mIconView;
     private TitleView mTitleView;
     private int mAnimationDuration;
+    private Animation mAnimation;
 
     public PopTabView(Context context) {
         super(context);
@@ -63,27 +65,31 @@ public class PopTabView extends LinearLayout implements Animation.AnimationListe
     public void setTextVisible(boolean isVisible) {
         if (isVisible) {
             mTitleView.setVisibility(INVISIBLE);
-            postDelayed(new Runnable() {
+            ViewCompat.postOnAnimation(mTitleView, new Runnable() {
                 @Override
                 public void run() {
                     scaleView(mTitleView, 0f, 1f);
                 }
-            }, 200);
+            });
         } else {
+            if (mAnimation != null) {
+                mAnimation.cancel();
+                mAnimation.reset();
+            }
             mTitleView.setVisibility(GONE);
         }
     }
 
     public void scaleView(View v, float startScale, float endScale) {
-        Animation anim = new ScaleAnimation(
-                startScale, endScale, // Start and end values for the X axis scaling
-                startScale, endScale, // Start and end values for the Y axis scaling
-                Animation.RELATIVE_TO_SELF, 0.5f, // Pivot point of X scaling
-                Animation.RELATIVE_TO_SELF, 0.5f); // Pivot point of Y scaling
-        anim.setFillAfter(true); // Needed to keep the result of the animation
-        anim.setDuration(mAnimationDuration);
-        anim.setAnimationListener(this);
-        v.startAnimation(anim);
+        mAnimation = new ScaleAnimation(
+                startScale, endScale,
+                startScale, endScale,
+                Animation.RELATIVE_TO_SELF, 0.5f,
+                Animation.RELATIVE_TO_SELF, 0.5f);
+        mAnimation.setFillAfter(true);
+        mAnimation.setDuration(mAnimationDuration);
+        mAnimation.setAnimationListener(this);
+        v.startAnimation(mAnimation);
     }
 
     public void setTextColor(int color) {
@@ -97,7 +103,7 @@ public class PopTabView extends LinearLayout implements Animation.AnimationListe
 
     @Override
     public void onAnimationEnd(Animation animation) {
-        mTitleView.setVisibility(VISIBLE);
+//        mTitleView.setVisibility(VISIBLE);
     }
 
     @Override
