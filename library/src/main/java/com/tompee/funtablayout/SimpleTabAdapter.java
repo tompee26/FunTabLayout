@@ -62,11 +62,6 @@ public class SimpleTabAdapter extends BaseAdapter<SimpleTabAdapter.ViewHolder> {
     }
 
     @Override
-    public int getTabIndicatorColor() {
-        return mTabIndicatorColor;
-    }
-
-    @Override
     public int getTabIndicatorHeight() {
         return mTabIndicatorHeight;
     }

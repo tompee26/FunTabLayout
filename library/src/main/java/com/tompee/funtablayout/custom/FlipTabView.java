@@ -16,40 +16,39 @@
 package com.tompee.funtablayout.custom;
 
 import android.content.Context;
-import android.graphics.drawable.Icon;
-import android.support.v4.view.ViewCompat;
 import android.support.v4.widget.TextViewCompat;
 import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.ViewGroup;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
+import android.view.animation.AnimationSet;
+import android.view.animation.TranslateAnimation;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.ViewFlipper;
 
-public class BubbleTabView extends LinearLayout {
+public class FlipTabView extends ViewFlipper {
     private int mIconDimension;
     private IconView mIconView;
     private TitleView mTitleView;
+    private AnimationSet mLeftIn;
 
-    public BubbleTabView(Context context) {
+    public FlipTabView(Context context) {
         super(context);
-        setGravity(Gravity.CENTER);
         mIconView = new IconView(getContext());
         mTitleView = new TitleView(getContext());
-        addView(mIconView);
-        addView(mTitleView);
-    }
+        addView(mIconView, 0);
+        addView(mTitleView, 1);
 
-    public void setViewAlpha(float alpha) {
-        for (int index = 0; index < getChildCount(); index++) {
-            ViewCompat.setAlpha(getChildAt(index), alpha);
-        }
-    }
-
-    public void resetAlpha() {
-        for (int index = 0; index < getChildCount(); index++) {
-            ViewCompat.setAlpha(getChildAt(index), 1);
-        }
+        mLeftIn = new AnimationSet(true);
+        Animation translate = new TranslateAnimation(1, 0, 0, 0, Animation.RELATIVE_TO_PARENT,
+                Animation.RELATIVE_TO_PARENT, Animation.RELATIVE_TO_PARENT, Animation.RELATIVE_TO_PARENT);
+        translate.setDuration(500);
+        Animation alpha = new AlphaAnimation(0.1f, 1.0f);
+        alpha.setDuration(500);
+        mLeftIn.addAnimation(translate);
+        mLeftIn.addAnimation(alpha);
     }
 
     public void setIconDimension(int dimension) {
@@ -72,11 +71,33 @@ public class BubbleTabView extends LinearLayout {
         return mTitleView;
     }
 
+    @Override
+    public void setSelected(boolean isSelected) {
+        super.setSelected(isSelected);
+        mIconView.setSelected(isSelected);
+        mTitleView.setSelected(isSelected);
+    }
+
+    public void setFlip(boolean isSelected) {
+        if ((isSelected && getDisplayedChild() == 0) ||
+                (!isSelected && getDisplayedChild() == 1)) {
+            setInAnimation(mLeftIn);
+            setOutAnimation(mLeftIn);
+            showNext();
+        }
+    }
+
+    public void setTextColor(int color) {
+        mTitleView.setTextColor(color);
+    }
+
     private class TitleView extends TextView {
         public TitleView(Context context) {
             super(context);
-            setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
-                    ViewGroup.LayoutParams.WRAP_CONTENT));
+            LayoutParams params = new LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
+                    ViewGroup.LayoutParams.WRAP_CONTENT);
+            params.gravity = Gravity.CENTER;
+            setLayoutParams(params);
             setEllipsize(TextUtils.TruncateAt.END);
             setGravity(Gravity.CENTER);
         }
@@ -86,9 +107,10 @@ public class BubbleTabView extends LinearLayout {
 
         public IconView(Context context) {
             super(context);
-            LinearLayout.LayoutParams params = new LayoutParams(ViewGroup.
+            LayoutParams params = new LayoutParams(ViewGroup.
                     LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
             params.setMargins(0, 0, 4, 0);
+            params.gravity = Gravity.CENTER;
             setLayoutParams(params);
         }
 

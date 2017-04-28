@@ -24,6 +24,9 @@
         <activity
             android:name=".poptablayout.PopTabLayoutActivity"
             android:label="Pop Tab Layout" />
+        <activity
+            android:name=".fliptablayout.FlipTabLayoutActivity"
+            android:label="Flip Tab Layout" />
     </application>
 
 </manifest>

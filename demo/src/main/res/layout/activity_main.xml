@@ -31,4 +31,12 @@
         android:onClick="onClick"
         android:text="Pop Tab Layout" />
 
+    <Button
+        android:id="@+id/flip_tab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:onClick="onClick"
+        android:text="Flip Tab Layout" />
+
 </LinearLayout>

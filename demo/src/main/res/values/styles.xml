@@ -26,4 +26,10 @@
         <item name="textAllCaps">true</item>
     </style>
 
+    <style name="FlipTabText">
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">@android:color/white</item>
+        <item name="textAllCaps">true</item>
+    </style>
+
 </resources>

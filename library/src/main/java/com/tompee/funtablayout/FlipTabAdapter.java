@@ -1,12 +1,12 @@
 /**
  * Copyright (C) 2017 tompee
- * <p>
+ * <p/>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * <p>
+ * <p/>
  * http://www.apache.org/licenses/LICENSE-2.0
- * <p>
+ * <p/>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -31,17 +31,15 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.tompee.funtablayout.custom.PopTabView;
+import com.tompee.funtablayout.custom.FlipTabView;
 
-public class PopTabAdapter extends BaseAdapter<PopTabAdapter.ViewHolder> {
+public class FlipTabAdapter extends BaseAdapter<FlipTabAdapter.ViewHolder> {
     private static final int MAX_TAB_TEXT_LINES = 1;
-
     private int mDefaultIconColor = Color.GRAY;
     private IconFetcher mIconFetcher;
     private int mIconDimension;
-    private int mPopDuration = 500;
 
-    public PopTabAdapter(Builder builder) {
+    public FlipTabAdapter(Builder builder) {
         super(builder);
 
         if (builder.mIconDimension != null) {
@@ -49,9 +47,6 @@ public class PopTabAdapter extends BaseAdapter<PopTabAdapter.ViewHolder> {
         }
         if (builder.mDefaultIconColor != null) {
             mDefaultIconColor = builder.mDefaultIconColor;
-        }
-        if (builder.mPopDuration != null) {
-            mPopDuration = builder.mPopDuration;
         }
         mIconFetcher = builder.mIconFetcher;
     }
@@ -62,8 +57,8 @@ public class PopTabAdapter extends BaseAdapter<PopTabAdapter.ViewHolder> {
     }
 
     @Override
-    public PopTabAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        PopTabView itemView = new PopTabView(parent.getContext());
+    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        FlipTabView itemView = new FlipTabView(parent.getContext());
         itemView.setLayoutParams(createLayoutParamsForTabs(parent));
         ViewCompat.setPaddingRelative(itemView, mTabPaddingStart, mTabPaddingTop,
                 mTabPaddingEnd, mTabPaddingBottom);
@@ -72,7 +67,6 @@ public class PopTabAdapter extends BaseAdapter<PopTabAdapter.ViewHolder> {
         itemView.setTextAppearance(mTabTextAppearance);
         itemView.setMaxLines(MAX_TAB_TEXT_LINES);
         itemView.setTextColor(mTabIndicatorColor);
-        itemView.setPopDuration(mPopDuration);
         return new ViewHolder(itemView);
     }
 
@@ -89,11 +83,11 @@ public class PopTabAdapter extends BaseAdapter<PopTabAdapter.ViewHolder> {
     }
 
     @Override
-    public void onBindViewHolder(PopTabAdapter.ViewHolder holder, int position) {
+    public void onBindViewHolder(ViewHolder holder, int position) {
         CharSequence title = getViewPager().getAdapter().getPageTitle(position);
-        PopTabView view = (PopTabView) holder.mTitle.getParent();
+        FlipTabView view = (FlipTabView) holder.mTitle.getParent();
         view.setSelected(getCurrentIndicatorPosition() == position);
-        view.setTextVisible(getCurrentIndicatorPosition() == position);
+        view.setFlip(getCurrentIndicatorPosition() == position);
         holder.mTitle.setText(title);
         if (mIconFetcher != null) {
             holder.mIcon.setImageDrawable(loadIconWithTint(holder.mIcon.getContext(),
@@ -133,7 +127,6 @@ public class PopTabAdapter extends BaseAdapter<PopTabAdapter.ViewHolder> {
         private IconFetcher mIconFetcher;
         private Integer mIconDimension;
         private Integer mDefaultIconColor;
-        private Integer mPopDuration;
 
         /**
          * Creates a builder for a simple tab adapter
@@ -239,26 +232,15 @@ public class PopTabAdapter extends BaseAdapter<PopTabAdapter.ViewHolder> {
         }
 
         /**
-         * Sets the pop animation duration
-         *
-         * @param duration New duration in milliseconds. Default is 500
-         * @return This Builder object to allow for chaining of calls to set methods
-         */
-        public Builder setPopDuration(int duration) {
-            mPopDuration = duration;
-            return this;
-        }
-
-        /**
          * Creates a SimpleTabAdapter with the arguments supplied to this builder.
          *
          * @return A SimpleTabAdapter instance
          */
-        public PopTabAdapter build() {
+        public FlipTabAdapter build() {
             if (getViewPager() == null) {
                 throw new IllegalArgumentException("ViewPager cannot be null");
             }
-            return new PopTabAdapter(this);
+            return new FlipTabAdapter(this);
         }
     }
 
@@ -268,8 +250,8 @@ public class PopTabAdapter extends BaseAdapter<PopTabAdapter.ViewHolder> {
 
         public ViewHolder(View itemView) {
             super(itemView);
-            mIcon = ((PopTabView) itemView).getIconView();
-            mTitle = ((PopTabView) itemView).getTitleView();
+            mIcon = ((FlipTabView) itemView).getIconView();
+            mTitle = ((FlipTabView) itemView).getTitleView();
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -281,4 +263,5 @@ public class PopTabAdapter extends BaseAdapter<PopTabAdapter.ViewHolder> {
             });
         }
     }
+
 }

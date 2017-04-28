@@ -96,7 +96,9 @@ public abstract class BaseAdapter<T extends RecyclerView.ViewHolder>
         mTabVisibleCount = count;
     }
 
-    protected abstract int getTabIndicatorColor();
+    protected int getTabIndicatorColor() {
+        return mTabIndicatorColor;
+    }
 
     protected abstract int getTabIndicatorHeight();
 

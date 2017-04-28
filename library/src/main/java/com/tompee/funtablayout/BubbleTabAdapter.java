@@ -67,11 +67,6 @@ public class BubbleTabAdapter extends BaseAdapter<BubbleTabAdapter.ViewHolder> {
     }
 
     @Override
-    public int getTabIndicatorColor() {
-        return mTabIndicatorColor;
-    }
-
-    @Override
     protected int getTabIndicatorHeight() {
         return 1;
     }
