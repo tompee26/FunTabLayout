@@ -28,11 +28,18 @@ public class PopTabLayoutActivity extends AppCompatActivity implements PopTabAda
         PopTabAdapter.Builder builder = new PopTabAdapter.Builder(this).
                 setViewPager(viewPager).
                 setTabPadding(24, 24, 24, 24).
+                setTabTextAppearance(R.style.PopTabText).
                 setTabBackgroundResId(R.drawable.ripple).
-                setIconFetcher(this).
+                setTabIndicatorColor(Color.GREEN).
+                setIconFetcher(new PopTabAdapter.IconFetcher() {
+                    @Override
+                    public int getIcon(int position) {
+                        return 0;
+                    }
+                }).
                 setIconDimension(70).
                 setDefaultIconColor(Color.WHITE).
-                setTabTextAppearance(R.style.PopTabText);
+                setPopDuration(2000);
         tabLayout.setUpWithAdapter(builder.build());
     }
 

@@ -1,12 +1,12 @@
 /**
  * Copyright (C) 2017 tompee
- * <p>
+ * <p/>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * <p>
+ * <p/>
  * http://www.apache.org/licenses/LICENSE-2.0
- * <p>
+ * <p/>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -32,6 +32,7 @@ import android.util.AttributeSet;
 import android.view.View;
 
 import com.tompee.funtablayout.custom.BubbleTabView;
+import com.tompee.funtablayout.custom.PopTabView;
 
 public class FunTabLayout extends RecyclerView {
     protected static final long DEFAULT_SCROLL_DURATION = 200;
@@ -53,7 +54,7 @@ public class FunTabLayout extends RecyclerView {
     protected float mPositionThreshold;
     protected boolean mRequestScrollToTab;
     protected boolean mScrollEanbled;
-    protected float mBubbleTabPositionOffset;
+    protected float mTabPositionOffset;
 
     public FunTabLayout(Context context) {
         this(context, null);
@@ -121,10 +122,9 @@ public class FunTabLayout extends RecyclerView {
         if (mAdapter instanceof SimpleTabAdapter) {
             mViewPager.addOnPageChangeListener(new SimpleTabOnPageChangeListener(this));
         } else if (mAdapter instanceof BubbleTabAdapter) {
-            mViewPager.addOnPageChangeListener(new BubbleTabOnPageChangeListener(this,
-                    (BubbleTabAdapter) adapter));
+            mViewPager.addOnPageChangeListener(new BubbleTabOnPageChangeListener(this));
         } else if (mAdapter instanceof PopTabAdapter) {
-            mViewPager.addOnPageChangeListener(new SimpleTabOnPageChangeListener(this));
+            mViewPager.addOnPageChangeListener(new PopTabOnPageChangeListener(this));
         }
         mAdapter.setTabVisibleCount(mTabVisibleCount);
         setAdapter(adapter);
@@ -355,9 +355,8 @@ public class FunTabLayout extends RecyclerView {
         private final FunTabLayout mFunTabLayout;
         private int mScrollState;
 
-        public BubbleTabOnPageChangeListener(FunTabLayout funTabLayout, BubbleTabAdapter adapter) {
+        public BubbleTabOnPageChangeListener(FunTabLayout funTabLayout) {
             mFunTabLayout = funTabLayout;
-            mAdapter = adapter;
         }
 
         @Override
@@ -371,7 +370,44 @@ public class FunTabLayout extends RecyclerView {
             if (nextView != null) {
                 nextView.setAlpha(1 - positionOffset);
             }
-            mBubbleTabPositionOffset = positionOffset;
+            mTabPositionOffset = positionOffset;
+        }
+
+        @Override
+        public void onPageScrollStateChanged(int state) {
+            mScrollState = state;
+        }
+
+        @Override
+        public void onPageSelected(int position) {
+            if (mScrollState == ViewPager.SCROLL_STATE_IDLE) {
+                if (mFunTabLayout.mIndicatorPosition != position) {
+                    mFunTabLayout.scrollToTab(position);
+                }
+            }
+        }
+    }
+
+    private class PopTabOnPageChangeListener implements ViewPager.OnPageChangeListener {
+
+        private final FunTabLayout mFunTabLayout;
+        private int mScrollState;
+
+        public PopTabOnPageChangeListener(FunTabLayout funTabLayout) {
+            mFunTabLayout = funTabLayout;
+        }
+
+        @Override
+        public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+            mFunTabLayout.scrollToTab(position, positionOffset, false);
+            PopTabView view = (PopTabView) mLinearLayoutManager.findViewByPosition(position);
+            if (view != null) {
+            }
+//            PopTabView nextView = (PopTabView) mLinearLayoutManager.findViewByPosition(position + 1);
+//            if (nextView != null) {
+//                nextView.setAlpha(1 - positionOffset);
+//            }
+            mTabPositionOffset = positionOffset;
         }
 
         @Override
@@ -432,11 +468,11 @@ public class FunTabLayout extends RecyclerView {
                 mIndicatorPaint.setColor(mAdapter.getTabIndicatorColor());
                 BubbleTabAdapter adapter = (BubbleTabAdapter) mAdapter;
                 int maxRadius = (getHeight() / 2) - 12;
-                if (mBubbleTabPositionOffset > 0.1 && mBubbleTabPositionOffset < 0.50) {
-                    canvas.drawCircle(centerX, centerY, maxRadius * (1 - mBubbleTabPositionOffset),
+                if (mTabPositionOffset > 0.1 && mTabPositionOffset < 0.50) {
+                    canvas.drawCircle(centerX, centerY, maxRadius * (1 - mTabPositionOffset),
                             mIndicatorPaint);
-                } else if (mBubbleTabPositionOffset >= 0.50 && mBubbleTabPositionOffset < 0.99) {
-                    canvas.drawCircle(centerX, centerY, maxRadius * (mBubbleTabPositionOffset), mIndicatorPaint);
+                } else if (mTabPositionOffset >= 0.50 && mTabPositionOffset < 0.99) {
+                    canvas.drawCircle(centerX, centerY, maxRadius * (mTabPositionOffset), mIndicatorPaint);
                 } else {
                     canvas.drawCircle(centerX, centerY, maxRadius, mIndicatorPaint);
                     Bitmap bitmap = adapter.getBitmapIcon(mViewPager.getCurrentItem());

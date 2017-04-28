@@ -23,7 +23,8 @@ public class PopTabAdapter extends BaseAdapter<PopTabAdapter.ViewHolder> {
 
     private int mDefaultIconColor = Color.GRAY;
     private IconFetcher mIconFetcher;
-    private Integer mIconDimension;
+    private int mIconDimension;
+    private int mPopDuration = 500;
 
     public PopTabAdapter(Builder builder) {
         super(builder);
@@ -33,6 +34,9 @@ public class PopTabAdapter extends BaseAdapter<PopTabAdapter.ViewHolder> {
         }
         if (builder.mDefaultIconColor != null) {
             mDefaultIconColor = builder.mDefaultIconColor;
+        }
+        if (builder.mPopDuration != null) {
+            mPopDuration = builder.mPopDuration;
         }
         mIconFetcher = builder.mIconFetcher;
     }
@@ -58,6 +62,7 @@ public class PopTabAdapter extends BaseAdapter<PopTabAdapter.ViewHolder> {
         itemView.setTextAppearance(mTabTextAppearance);
         itemView.setMaxLines(MAX_TAB_TEXT_LINES);
         itemView.setTextColor(mTabIndicatorColor);
+        itemView.setPopDuration(mPopDuration);
         return new ViewHolder(itemView);
     }
 
@@ -77,8 +82,8 @@ public class PopTabAdapter extends BaseAdapter<PopTabAdapter.ViewHolder> {
     public void onBindViewHolder(PopTabAdapter.ViewHolder holder, int position) {
         CharSequence title = getViewPager().getAdapter().getPageTitle(position);
         PopTabView view = (PopTabView) holder.mTitle.getParent();
-        view.setTextVisible(getCurrentIndicatorPosition() == position);
         view.setSelected(getCurrentIndicatorPosition() == position);
+        view.setTextVisible(getCurrentIndicatorPosition() == position);
         holder.mTitle.setText(title);
         if (mIconFetcher != null) {
             holder.mIcon.setImageDrawable(loadIconWithTint(holder.mIcon.getContext(),
@@ -118,6 +123,7 @@ public class PopTabAdapter extends BaseAdapter<PopTabAdapter.ViewHolder> {
         private IconFetcher mIconFetcher;
         private Integer mIconDimension;
         private Integer mDefaultIconColor;
+        private Integer mPopDuration;
 
         /**
          * Creates a builder for a simple tab adapter
@@ -219,6 +225,17 @@ public class PopTabAdapter extends BaseAdapter<PopTabAdapter.ViewHolder> {
          */
         public Builder setDefaultIconColor(int color) {
             mDefaultIconColor = color;
+            return this;
+        }
+
+        /**
+         * Sets the pop animation duration
+         *
+         * @param duration New duration in milliseconds. Default is 500
+         * @return This Builder object to allow for chaining of calls to set methods
+         */
+        public Builder setPopDuration(int duration) {
+            mPopDuration = duration;
             return this;
         }
 
