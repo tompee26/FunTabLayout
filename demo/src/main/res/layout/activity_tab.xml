@@ -11,7 +11,7 @@
         android:id="@+id/tablayout"
         android:layout_width="match_parent"
         android:layout_height="52dp"
-        app:tabVisibleCount="5" />
+        app:tabVisibleCount="3" />
 
     <android.support.v4.view.ViewPager
         android:id="@+id/viewpager"

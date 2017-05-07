@@ -3,5 +3,6 @@
     <declare-styleable name="FunTabLayout">
         <attr name="scrollEnabled" format="boolean"/>
         <attr name="tabVisibleCount" format="integer"/>
+        <attr name="positionThreshold" format="float"/>
     </declare-styleable>
 </resources>

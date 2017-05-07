@@ -15,40 +15,37 @@
  */
 package com.tompee.funtablayout.custom;
 
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
 import android.content.Context;
 import android.support.v4.widget.TextViewCompat;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Gravity;
+import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.AlphaAnimation;
-import android.view.animation.Animation;
-import android.view.animation.AnimationSet;
-import android.view.animation.TranslateAnimation;
+import android.view.animation.AccelerateDecelerateInterpolator;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.ViewFlipper;
 
-public class FlipTabView extends ViewFlipper {
+public class FlipTabView extends FrameLayout {
+    private static final int DEFAULT_DELAY = 1000;
     private int mIconDimension;
     private IconView mIconView;
     private TitleView mTitleView;
-    private AnimationSet mLeftIn;
+    private AnimatorSet mAnimatorSet;
+    private boolean mIsBackVisible;
+    private boolean mPreviousSelectedState;
 
     public FlipTabView(Context context) {
         super(context);
         mIconView = new IconView(getContext());
         mTitleView = new TitleView(getContext());
+        mTitleView.setAlpha(0f);
         addView(mIconView, 0);
         addView(mTitleView, 1);
-
-        mLeftIn = new AnimationSet(true);
-        Animation translate = new TranslateAnimation(1, 0, 0, 0, Animation.RELATIVE_TO_PARENT,
-                Animation.RELATIVE_TO_PARENT, Animation.RELATIVE_TO_PARENT, Animation.RELATIVE_TO_PARENT);
-        translate.setDuration(500);
-        Animation alpha = new AlphaAnimation(0.1f, 1.0f);
-        alpha.setDuration(500);
-        mLeftIn.addAnimation(translate);
-        mLeftIn.addAnimation(alpha);
     }
 
     public void setIconDimension(int dimension) {
@@ -71,20 +68,67 @@ public class FlipTabView extends ViewFlipper {
         return mTitleView;
     }
 
+    public boolean getSelectedState() {
+        return mIsBackVisible;
+    }
+
     @Override
     public void setSelected(boolean isSelected) {
         super.setSelected(isSelected);
-        mIconView.setSelected(isSelected);
-        mTitleView.setSelected(isSelected);
+        if (isSelected) {
+            Log.d("hello", "isbackvisible: " + mIsBackVisible);
+            flip();
+        } else {
+            if (mAnimatorSet != null) {
+                mAnimatorSet.cancel();
+            }
+            if (mPreviousSelectedState) {
+                flip();
+            } else {
+                removeAllViews();
+                mTitleView.setAlpha(0f);
+                addView(mIconView, 0);
+                addView(mTitleView, 1);
+                mIsBackVisible = false;
+            }
+        }
+        mPreviousSelectedState = isSelected;
     }
 
-    public void setFlip(boolean isSelected) {
-        if ((isSelected && getDisplayedChild() == 0) ||
-                (!isSelected && getDisplayedChild() == 1)) {
-            setInAnimation(mLeftIn);
-            setOutAnimation(mLeftIn);
-            showNext();
+    private void flip() {
+        View frontView;
+        View backView;
+        if (mIsBackVisible) {
+            frontView = getChildAt(1);
+            backView = getChildAt(0);
+        } else {
+            frontView = getChildAt(0);
+            backView = getChildAt(1);
         }
+
+        /* Out animation */
+        mAnimatorSet = new AnimatorSet();
+        ObjectAnimator rotateOut = ObjectAnimator.ofFloat(frontView, "rotationY", 0.0f, 180f);
+        rotateOut.setDuration(DEFAULT_DELAY);
+        rotateOut.setInterpolator(new AccelerateDecelerateInterpolator());
+        ObjectAnimator alphaOut = ObjectAnimator.ofFloat(frontView, "alpha", 1.0f, 0f);
+        alphaOut.setDuration(0);
+        alphaOut.setStartDelay(DEFAULT_DELAY / 2);
+
+        /* In animation */
+        ObjectAnimator alphaIn = ObjectAnimator.ofFloat(backView, "alpha", 1.0f, 0f);
+        alphaIn.setDuration(0);
+        ObjectAnimator rotateIn = ObjectAnimator.ofFloat(backView, "rotationY", -180f, 0f);
+        rotateIn.setRepeatMode(ValueAnimator.REVERSE);
+        rotateIn.setInterpolator(new AccelerateDecelerateInterpolator());
+        rotateIn.setDuration(DEFAULT_DELAY);
+        ObjectAnimator alphaReveal = ObjectAnimator.ofFloat(backView, "alpha", 0f, 1f);
+        alphaReveal.setDuration(0);
+        alphaReveal.setStartDelay(DEFAULT_DELAY / 2);
+
+        mAnimatorSet.playTogether(rotateOut, alphaOut, alphaIn, rotateIn, alphaReveal);
+        mAnimatorSet.start();
+        mIsBackVisible = !mIsBackVisible;
     }
 
     public void setTextColor(int color) {
@@ -123,8 +167,10 @@ public class FlipTabView extends ViewFlipper {
                 int height = getMeasuredHeight();
                 int width = getMeasuredWidth();
                 if (width < height) {
+                    //noinspection SuspiciousNameCombination
                     setMeasuredDimension(width, width);
                 } else {
+                    //noinspection SuspiciousNameCombination
                     setMeasuredDimension(height, height);
                 }
             }

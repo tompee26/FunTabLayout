@@ -16,15 +16,10 @@
 package com.tompee.funtablayout;
 
 import android.content.Context;
-import android.content.res.ColorStateList;
-import android.graphics.Color;
-import android.graphics.drawable.Drawable;
-import android.support.annotation.DrawableRes;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -35,7 +30,6 @@ import com.tompee.funtablayout.custom.FlipTabView;
 
 public class FlipTabAdapter extends BaseAdapter<FlipTabAdapter.ViewHolder> {
     private static final int MAX_TAB_TEXT_LINES = 1;
-    private int mDefaultIconColor = Color.GRAY;
     private IconFetcher mIconFetcher;
     private int mIconDimension;
 
@@ -44,9 +38,6 @@ public class FlipTabAdapter extends BaseAdapter<FlipTabAdapter.ViewHolder> {
 
         if (builder.mIconDimension != null) {
             mIconDimension = builder.mIconDimension;
-        }
-        if (builder.mDefaultIconColor != null) {
-            mDefaultIconColor = builder.mDefaultIconColor;
         }
         mIconFetcher = builder.mIconFetcher;
     }
@@ -87,31 +78,18 @@ public class FlipTabAdapter extends BaseAdapter<FlipTabAdapter.ViewHolder> {
         CharSequence title = getViewPager().getAdapter().getPageTitle(position);
         FlipTabView view = (FlipTabView) holder.mTitle.getParent();
         view.setSelected(getCurrentIndicatorPosition() == position);
-        view.setFlip(getCurrentIndicatorPosition() == position);
+        Log.d("hello", "position: " + position + " selectedstate: " + view.getSelectedState());
         holder.mTitle.setText(title);
         if (mIconFetcher != null) {
-            holder.mIcon.setImageDrawable(loadIconWithTint(holder.mIcon.getContext(),
-                    mIconFetcher.getIcon(position)));
+            holder.mIcon.setBackgroundResource(mIconFetcher.getIcon(position));
         } else {
             holder.mIcon.setVisibility(View.GONE);
         }
     }
 
-    private Drawable loadIconWithTint(Context context, @DrawableRes int resourceId) {
-        Drawable icon = ContextCompat.getDrawable(context, resourceId);
-        ColorStateList colorStateList;
-        int[][] states = new int[][]{
-                new int[]{android.R.attr.state_selected},
-                new int[]{-android.R.attr.state_empty}
-        };
-        int[] colors = new int[]{
-                mTabIndicatorColor,
-                mDefaultIconColor
-        };
-        colorStateList = new ColorStateList(states, colors);
-        icon = DrawableCompat.wrap(icon);
-        DrawableCompat.setTintList(icon, colorStateList);
-        return icon;
+    @Override
+    public int getItemViewType(int position) {
+        return position;
     }
 
     @Override
@@ -126,7 +104,6 @@ public class FlipTabAdapter extends BaseAdapter<FlipTabAdapter.ViewHolder> {
     public static class Builder extends BaseAdapter.BaseBuilder {
         private IconFetcher mIconFetcher;
         private Integer mIconDimension;
-        private Integer mDefaultIconColor;
 
         /**
          * Creates a builder for a simple tab adapter
@@ -217,17 +194,6 @@ public class FlipTabAdapter extends BaseAdapter<FlipTabAdapter.ViewHolder> {
          */
         public Builder setIconDimension(int dimension) {
             mIconDimension = dimension;
-            return this;
-        }
-
-        /**
-         * Sets icon color when a tab is not selected. Default color is gray
-         *
-         * @param color New color to set
-         * @return This Builder object to allow for chaining of calls to set methods
-         */
-        public Builder setDefaultIconColor(int color) {
-            mDefaultIconColor = color;
             return this;
         }
 

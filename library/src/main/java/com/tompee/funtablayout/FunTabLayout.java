@@ -75,15 +75,15 @@ public class FunTabLayout extends RecyclerView {
         mLinearLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
         setLayoutManager(mLinearLayoutManager);
         addItemDecoration(new IndicatorDecoration());
-
         setOverScrollMode(OVER_SCROLL_NEVER);
-        mPositionThreshold = DEFAULT_POSITION_THRESHOLD;
     }
 
     private void getAttributes(Context context, AttributeSet attrs, int defStyle) {
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.FunTabLayout, defStyle, 0);
         mScrollEanbled = a.getBoolean(R.styleable.FunTabLayout_scrollEnabled, true);
         mTabVisibleCount = a.getInteger(R.styleable.FunTabLayout_tabVisibleCount, 0);
+        mPositionThreshold = a.getFloat(R.styleable.FunTabLayout_positionThreshold,
+                DEFAULT_POSITION_THRESHOLD);
         a.recycle();
     }
 
@@ -105,6 +105,15 @@ public class FunTabLayout extends RecyclerView {
         mTabVisibleCount = count;
     }
 
+    /**
+     * Sets the position threshold on when to switch tabs
+     *
+     * @param threshold New position threshold
+     */
+    public void setPositionThreshold(float threshold) {
+        mPositionThreshold = threshold;
+    }
+
     public void setUpWithAdapter(BaseAdapter<?> adapter) {
         if (adapter == null) {
             throw new IllegalArgumentException("Adapter cannot be null");
@@ -120,10 +129,12 @@ public class FunTabLayout extends RecyclerView {
         if (mAdapter instanceof SimpleTabAdapter) {
             mViewPager.addOnPageChangeListener(new SimpleTabOnPageChangeListener(this));
         } else if (mAdapter instanceof BubbleTabAdapter) {
+            mPositionThreshold = 1;
             mViewPager.addOnPageChangeListener(new BubbleTabOnPageChangeListener(this));
         } else if (mAdapter instanceof PopTabAdapter) {
             mViewPager.addOnPageChangeListener(new SimpleTabOnPageChangeListener(this));
         } else if (mAdapter instanceof FlipTabAdapter) {
+            mPositionThreshold = 0.5f;
             mViewPager.addOnPageChangeListener(new SimpleTabOnPageChangeListener(this));
         }
         mAdapter.setTabVisibleCount(mTabVisibleCount);

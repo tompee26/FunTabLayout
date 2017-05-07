@@ -23,6 +23,7 @@ import android.util.TypedValue;
 
 public abstract class BaseAdapter<T extends RecyclerView.ViewHolder>
         extends RecyclerView.Adapter<T> {
+    private final ViewPager mViewPager;
     protected int mTabPaddingStart;
     protected int mTabPaddingTop;
     protected int mTabPaddingEnd;
@@ -30,7 +31,6 @@ public abstract class BaseAdapter<T extends RecyclerView.ViewHolder>
     protected int mTabTextAppearance;
     protected int mTabBackgroundResId;
     protected int mTabIndicatorColor;
-    private ViewPager mViewPager;
     private int mIndicatorPosition;
     private int mTabVisibleCount;
 
