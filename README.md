@@ -1,12 +1,11 @@
 # FunTabLayout
 
-An efficient tablayout for Android with added FUN!
+An efficient tab layout for Android with added FUN!
 <br>
-<img src="assets/simple.gif" width="200">
-<br>
-<img src="assets/bubble.gif" width="200">
-<br>
-<img src="assets/pop.gif" width="200">
+<img src="assets/simple.gif" width="200" height="350">
+<img src="assets/bubble.gif" width="200" height="350">
+<img src="assets/pop.gif" width="200" height="350">
+<img src="assets/flip.gif" width="200" height="350">
 
 ## Features
 - Efficient in large tab counts
@@ -113,11 +112,33 @@ PopTabAdapter.Builder builder = new PopTabAdapter.Builder(this).
 tabLayout.setUpWithAdapter(builder.build());
 ```
 
+For `FlipTabLayout`, create a `FlipTabLayout.Builder` and setup with ViewPager
+```java
+FunTabLayout tabLayout = (FunTabLayout) findViewById(R.id.tablayout);
+FlipTabLayout.Builder builder = new FlipTabLayout.Builder(this).
+        setViewPager(viewPager).
+        setTabPadding(24, 24, 24, 24).
+        setTabTextAppearance(R.style.FlipTabText).
+        setTabBackgroundResId(R.drawable.ripple).
+        setTabIndicatorColor(Color.YELLOW).
+        setIconFetcher(new PopTabAdapter.IconFetcher() {
+            @Override
+            public int getIcon(int position) {
+                // return icon
+            }
+        }).
+        setIconDimension(80).
+        setDefaultIconColor(Color.WHITE).
+        setPopDuration(2000);
+tabLayout.setUpWithAdapter(builder.build());
+```
+
 ## Attributes
 ### FunTabLayout
 | method  | description |
 | ------------- | ------------- |
 | setTabVisibleCount | Visible tab count. If greater than actual tab count, will use tab count instead |
+| setPositionThreshold | Threshold on when to change tabs. Default value is 0.6 |
 
 ### SimpleTabAdapter
 | method  | description |
@@ -150,6 +171,17 @@ tabLayout.setUpWithAdapter(builder.build());
 | setIconDimension        | Default icon dimension in pixels |
 | setDefaultIconColor     | Default icon color |
 | setPopDuration          | Duration of text pop animation |
+
+### FlipTabAdapter
+| method  | description |
+| ------------- | ------------- |
+| setTabPadding           | Padding of each tab view in pixels |
+| setTabTextAppearance    | Text appearance of tab view |
+| setTabBackgroundResId   | Background resource of tab view |
+| setTabIndicatorColor    | Icon and text indicator bar color |
+| setIconFetcher          | Method for providing icons |
+| setIconDimension        | Default icon dimension in pixels |
+| setDefaultIconColor     | Default icon color |
 
 ## Thanks
 The RecyclerView approach in FunTabLayout is an extension of nshmura's RecyclerTabLayout

@@ -34,9 +34,8 @@ import java.util.List;
 
 public class BubbleTabAdapter extends BaseAdapter<BubbleTabAdapter.ViewHolder> {
     private static final int MAX_TAB_TEXT_LINES = 2;
-
+    private final IconFetcher mIconFetcher;
     private int mIconDimension;
-    private IconFetcher mIconFetcher;
     private List<Bitmap> mPreloadedBitmaps;
 
     private BubbleTabAdapter(Builder builder) {

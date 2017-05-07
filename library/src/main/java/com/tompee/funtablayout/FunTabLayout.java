@@ -31,16 +31,16 @@ import android.util.AttributeSet;
 import android.view.View;
 
 import com.tompee.funtablayout.custom.BubbleTabView;
+import com.tompee.funtablayout.custom.FlipTabView;
 
 public class FunTabLayout extends RecyclerView {
     protected static final long DEFAULT_SCROLL_DURATION = 200;
     protected static final float DEFAULT_POSITION_THRESHOLD = 0.6f;
     protected static final float POSITION_THRESHOLD_ALLOWABLE = 0.001f;
     private static final String TAG = "FunTabLayout";
-    protected Paint mIndicatorPaint;
+    protected final Paint mIndicatorPaint;
+    protected final LinearLayoutManager mLinearLayoutManager;
     protected int mTabVisibleCount;
-
-    protected LinearLayoutManager mLinearLayoutManager;
     protected RecyclerOnScrollListener mRecyclerOnScrollListener;
     protected ViewPager mViewPager;
     protected BaseAdapter<?> mAdapter;
@@ -135,7 +135,7 @@ public class FunTabLayout extends RecyclerView {
             mViewPager.addOnPageChangeListener(new SimpleTabOnPageChangeListener(this));
         } else if (mAdapter instanceof FlipTabAdapter) {
             mPositionThreshold = 0.5f;
-            mViewPager.addOnPageChangeListener(new SimpleTabOnPageChangeListener(this));
+            mViewPager.addOnPageChangeListener(new FlipTabOnPageChangeListener(this));
         }
         mAdapter.setTabVisibleCount(mTabVisibleCount);
         setAdapter(adapter);
@@ -274,9 +274,9 @@ public class FunTabLayout extends RecyclerView {
 
     protected static class RecyclerOnScrollListener extends OnScrollListener {
 
+        protected final FunTabLayout mFunTabLayout;
+        protected final LinearLayoutManager mLinearLayoutManager;
         public int mDx;
-        protected FunTabLayout mFunTabLayout;
-        protected LinearLayoutManager mLinearLayoutManager;
 
         public RecyclerOnScrollListener(FunTabLayout funTabLayout,
                                         LinearLayoutManager linearLayoutManager) {
@@ -380,6 +380,44 @@ public class FunTabLayout extends RecyclerView {
             BubbleTabView nextView = (BubbleTabView) mLinearLayoutManager.findViewByPosition(position + 1);
             if (nextView != null) {
                 nextView.setViewAlpha(1 - positionOffset);
+            }
+            mTabPositionOffset = positionOffset;
+        }
+
+        @Override
+        public void onPageScrollStateChanged(int state) {
+            mScrollState = state;
+        }
+
+        @Override
+        public void onPageSelected(int position) {
+            if (mScrollState == ViewPager.SCROLL_STATE_IDLE) {
+                if (mFunTabLayout.mIndicatorPosition != position) {
+                    mFunTabLayout.scrollToTab(position);
+                }
+            }
+        }
+    }
+
+    private class FlipTabOnPageChangeListener implements ViewPager.OnPageChangeListener {
+
+        private final FunTabLayout mFunTabLayout;
+        private int mScrollState;
+
+        public FlipTabOnPageChangeListener(FunTabLayout funTabLayout) {
+            mFunTabLayout = funTabLayout;
+        }
+
+        @Override
+        public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+            mFunTabLayout.scrollToTab(position, positionOffset, false);
+            FlipTabView view = (FlipTabView) mLinearLayoutManager.findViewByPosition(position);
+            if (view != null && positionOffset != 0) {
+                view.setRotationY(positionOffset * 360);
+            }
+            FlipTabView nextView = (FlipTabView) mLinearLayoutManager.findViewByPosition(position + 1);
+            if (nextView != null && positionOffset != 0) {
+                nextView.setRotationY(positionOffset * 360);
             }
             mTabPositionOffset = positionOffset;
         }

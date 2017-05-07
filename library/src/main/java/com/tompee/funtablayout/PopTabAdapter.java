@@ -35,9 +35,8 @@ import com.tompee.funtablayout.custom.PopTabView;
 
 public class PopTabAdapter extends BaseAdapter<PopTabAdapter.ViewHolder> {
     private static final int MAX_TAB_TEXT_LINES = 1;
-
+    private final IconFetcher mIconFetcher;
     private int mDefaultIconColor = Color.GRAY;
-    private IconFetcher mIconFetcher;
     private int mIconDimension;
     private int mPopDuration = 500;
 

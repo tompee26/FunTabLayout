@@ -30,9 +30,10 @@ public class FlipTabLayoutActivity extends AppCompatActivity implements FlipTabA
                 setTabPadding(24, 24, 24, 24).
                 setTabTextAppearance(R.style.FlipTabText).
                 setTabBackgroundResId(R.drawable.ripple).
-                setTabIndicatorColor(Color.GREEN).
+                setTabIndicatorColor(Color.YELLOW).
                 setIconFetcher(this).
-                setIconDimension(80);
+                setIconDimension(80).
+                setDefaultIconColor(Color.WHITE);
         tabLayout.setUpWithAdapter(builder.build());
     }
 

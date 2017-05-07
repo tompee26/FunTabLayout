@@ -16,6 +16,7 @@
 package com.tompee.funtablayout.custom;
 
 import android.content.Context;
+import android.content.res.ColorStateList;
 import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.ViewGroup;
@@ -28,5 +29,16 @@ public class TitleView extends TextView {
                 ViewGroup.LayoutParams.WRAP_CONTENT));
         setEllipsize(TextUtils.TruncateAt.END);
         setGravity(Gravity.CENTER);
+    }
+
+    public ColorStateList createColorStateList(int defaultColor, int selectedColor) {
+        final int[][] states = new int[2][];
+        final int[] colors = new int[2];
+        states[0] = SELECTED_STATE_SET;
+        colors[0] = selectedColor;
+        // Default enabled state
+        states[1] = EMPTY_STATE_SET;
+        colors[1] = defaultColor;
+        return new ColorStateList(states, colors);
     }
 }

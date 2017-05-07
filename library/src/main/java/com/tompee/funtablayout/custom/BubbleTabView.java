@@ -22,8 +22,8 @@ import android.view.Gravity;
 import android.widget.LinearLayout;
 
 public class BubbleTabView extends LinearLayout {
-    private IconView mIconView;
-    private TitleView mTitleView;
+    private final IconView mIconView;
+    private final TitleView mTitleView;
 
     public BubbleTabView(Context context) {
         super(context);
