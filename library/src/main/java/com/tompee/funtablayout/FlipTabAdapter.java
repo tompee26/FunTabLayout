@@ -31,8 +31,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.tompee.funtablayout.custom.FlipTabView;
-
 public class FlipTabAdapter extends BaseAdapter<FlipTabAdapter.ViewHolder> {
     private static final int MAX_TAB_TEXT_LINES = 1;
     private final IconFetcher mIconFetcher;

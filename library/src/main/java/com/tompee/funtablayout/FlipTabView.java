@@ -13,19 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.tompee.funtablayout.custom;
+package com.tompee.funtablayout;
 
 import android.content.Context;
-import android.support.v4.view.ViewCompat;
 import android.support.v4.widget.TextViewCompat;
 import android.view.Gravity;
 import android.widget.LinearLayout;
 
-public class BubbleTabView extends LinearLayout {
+class FlipTabView extends LinearLayout {
     private final IconView mIconView;
     private final TitleView mTitleView;
+    private int mDefaultColor;
 
-    public BubbleTabView(Context context) {
+    public FlipTabView(Context context) {
         super(context);
         setGravity(Gravity.CENTER);
         mIconView = new IconView(getContext());
@@ -34,16 +34,11 @@ public class BubbleTabView extends LinearLayout {
         addView(mTitleView);
     }
 
-    public void setViewAlpha(float alpha) {
-        for (int index = 0; index < getChildCount(); index++) {
-            ViewCompat.setAlpha(getChildAt(index), alpha);
-        }
-    }
-
-    public void resetAlpha() {
-        for (int index = 0; index < getChildCount(); index++) {
-            ViewCompat.setAlpha(getChildAt(index), 1);
-        }
+    @Override
+    public void setSelected(boolean selected) {
+        super.setSelected(selected);
+        mIconView.setSelected(selected);
+        mTitleView.setSelected(selected);
     }
 
     public void setIconDimension(int dimension) {
@@ -52,6 +47,7 @@ public class BubbleTabView extends LinearLayout {
 
     public void setTextAppearance(int textAppearance) {
         TextViewCompat.setTextAppearance(mTitleView, textAppearance);
+        mDefaultColor = mTitleView.getTextColors().getDefaultColor();
     }
 
     public void setMaxLines(int maxLines) {
@@ -64,5 +60,9 @@ public class BubbleTabView extends LinearLayout {
 
     public TitleView getTitleView() {
         return mTitleView;
+    }
+
+    public void setSelectedTextColor(int color) {
+        mTitleView.setTextColor(mTitleView.createColorStateList(mDefaultColor, color));
     }
 }

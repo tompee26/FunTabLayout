@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.tompee.funtablayout.custom;
+package com.tompee.funtablayout;
 
 import android.content.Context;
 import android.content.res.ColorStateList;
@@ -22,7 +22,7 @@ import android.view.Gravity;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-public class TitleView extends TextView {
+class TitleView extends TextView {
     public TitleView(Context context) {
         super(context);
         setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.tompee.funtablayout.custom;
+package com.tompee.funtablayout;
 
 import android.content.Context;
 import android.support.v4.view.ViewCompat;
@@ -24,8 +24,7 @@ import android.view.animation.Animation;
 import android.view.animation.ScaleAnimation;
 import android.widget.LinearLayout;
 
-public class PopTabView extends LinearLayout {
-
+class PopTabView extends LinearLayout {
     private final IconView mIconView;
     private final TitleView mTitleView;
     private int mAnimationDuration;

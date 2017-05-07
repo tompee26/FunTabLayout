@@ -21,7 +21,7 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.widget.RecyclerView;
 import android.util.TypedValue;
 
-public abstract class BaseAdapter<T extends RecyclerView.ViewHolder>
+abstract class BaseAdapter<T extends RecyclerView.ViewHolder>
         extends RecyclerView.Adapter<T> {
     private final ViewPager mViewPager;
     protected int mTabPaddingStart;

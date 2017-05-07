@@ -16,7 +16,7 @@ In your build.gradle:
 
 ```
 dependencies {
-   compile 'com.tompee:funtablayout:1.0.0'
+   compile 'com.tompee:funtablayout:1.1.0'
 }
 ```
 

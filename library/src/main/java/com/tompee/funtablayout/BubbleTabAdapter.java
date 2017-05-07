@@ -27,8 +27,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.tompee.funtablayout.custom.BubbleTabView;
-
 import java.util.ArrayList;
 import java.util.List;
 

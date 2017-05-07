@@ -30,9 +30,6 @@ import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.view.View;
 
-import com.tompee.funtablayout.custom.BubbleTabView;
-import com.tompee.funtablayout.custom.FlipTabView;
-
 public class FunTabLayout extends RecyclerView {
     protected static final long DEFAULT_SCROLL_DURATION = 200;
     protected static final float DEFAULT_POSITION_THRESHOLD = 0.6f;

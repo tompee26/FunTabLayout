@@ -13,14 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.tompee.funtablayout.custom;
+package com.tompee.funtablayout;
 
 import android.content.Context;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
-public class IconView extends ImageView {
+class IconView extends ImageView {
     private int mIconDimension;
 
     public IconView(Context context) {
